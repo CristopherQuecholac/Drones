@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
@@ -23,7 +25,7 @@ public class Proyecto extends javax.swing.JFrame {
     private BufferedImage img;
     private boolean up, par=false; 
     private Semaphore semaforo;
-    
+    private Lock mutex;
     
     public Proyecto() {
         initComponents();
@@ -37,6 +39,7 @@ public class Proyecto extends javax.swing.JFrame {
         circulos = new ArrayList<Circulo>();
         limites = new ArrayList<Line2D>();
         semaforo=new Semaphore(1);
+        mutex = new ReentrantLock(true);
         panel = new PanelBall(circulos, img, n, limites); 
         panel.setBounds(0, 0, 560, 560);
         add(panel);
@@ -51,7 +54,7 @@ public class Proyecto extends javax.swing.JFrame {
             up=true;
             for(Circulo c: circulos){
                 if(up){
-                    c.setLim(540, 0, 270, 0);
+                    c.setLim(540, 0, 260, 0);
                     c.setFrame(1, 1, 20, 20);
                     up=false;
                 }
@@ -73,7 +76,7 @@ public class Proyecto extends javax.swing.JFrame {
                     xminup=limup;
                     limup=limup+div;
                     xmaxup=limup;
-                    c.setLim(xmaxup, xminup, 270, 0);
+                    c.setLim(xmaxup, xminup, 260, 0);
                     c.setFrame(xminup+1, 1, 20, 20);
                     up=false;
                 }
@@ -112,7 +115,7 @@ public class Proyecto extends javax.swing.JFrame {
         circulo = new Circulo(540, 0, 540, 0);
         circulo.setFrame(1, 1, 20,20);
         circulos.add(circulo);
-        drones.add(new Ball(panel, circulo, op, semaforo));
+        drones.add(new Ball(panel, circulo, op, semaforo, mutex));
     }
     void limpia(){
         n.setConta(0);
@@ -133,9 +136,12 @@ public class Proyecto extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
 
@@ -144,6 +150,8 @@ public class Proyecto extends javax.swing.JFrame {
         jMenu2.setText("jMenu2");
 
         jMenu5.setText("jMenu5");
+
+        jMenuItem4.setText("jMenuItem4");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(545, 610));
@@ -158,6 +166,22 @@ public class Proyecto extends javax.swing.JFrame {
             }
         });
         jMenu3.add(jMenuItem1);
+
+        jMenuItem3.setText("Monitor");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem3);
+
+        jMenuItem5.setText("Mutex");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem5);
 
         jMenuBar1.add(jMenu3);
 
@@ -198,6 +222,18 @@ public class Proyecto extends javax.swing.JFrame {
         limpia();
         this.op=1;
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // TODO add your handling code here:
+        limpia();
+        this.op=2;
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // TODO add your handling code here:
+        limpia();
+        this.op=3;
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -240,6 +276,9 @@ public class Proyecto extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     // End of variables declaration//GEN-END:variables
   
 }
